@@ -1,0 +1,37 @@
+{
+  "rules": {
+    "version": "2",
+    "services": {
+      "cloud.firestore": {
+        "match /databases/{database}/documents": {
+          "function isSuperAdmin()": {
+            "return": "request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'SuperAdmin'"
+          },
+          "function isAuthenticated()": {
+            "return": "request.auth != null"
+          },
+          "function isUserInCompany(companyId)": {
+            "return": "isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId == companyId"
+          },
+          "function hasRoleInCompany(companyId, roles)": {
+            "return": "isUserInCompany(companyId) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in roles"
+          },
+          
+          "match /companies/{companyId}": {
+            "allow read": "isSuperAdmin() || isUserInCompany(companyId)",
+            "allow write": "isSuperAdmin()"
+          },
+          
+          "match /users/{userId}": {
+            "allow read": "isSuperAdmin() || (isAuthenticated() && resource.data.companyId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId)",
+            "allow write": "isSuperAdmin() || (isAuthenticated() && request.auth.uid == userId) || hasRoleInCompany(resource.data.companyId, ['Admin'])"
+          },
+          
+          "match /{collection}/{document=**}": {
+            "allow read, write": "isSuperAdmin() || (isAuthenticated() && resource.data.companyId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId)"
+          }
+        }
+      }
+    }
+  }
+}

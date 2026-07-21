@@ -1,0 +1,104 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isSuperAdmin() {
+      return isAuthenticated() && getUserData().role == 'SuperAdmin';
+    }
+
+    function isCompanyAdmin(companyId) {
+      return isAuthenticated() && getUserData().companyId == companyId && getUserData().role == 'Admin';
+    }
+
+    function hasCompanyAccess(companyId) {
+      return isSuperAdmin() || (isAuthenticated() && getUserData().companyId == companyId);
+    }
+
+    match /{document=**} {
+      allow read, write: if isAuthenticated();
+    }
+
+    match /companies/{companyId} {
+      allow read: if hasCompanyAccess(companyId) || true; // True for public frontend if needed, but better restrict if possible. Let's leave true for companies so public domains can resolve.
+      allow create, delete: if isSuperAdmin();
+      allow update: if hasCompanyAccess(companyId);
+    }
+
+    match /users/{userId} {
+      allow read: if isSuperAdmin() || (isAuthenticated() && getUserData().companyId == resource.data.companyId) || request.auth.uid == userId;
+      allow create, update, delete: if isSuperAdmin() || isCompanyAdmin(request.resource.data.companyId) || request.auth.uid == userId;
+    }
+
+    match /portfolio/{docId} {
+      allow read: if hasCompanyAccess(resource.data.companyId) || true;
+      allow create: if hasCompanyAccess(request.resource.data.companyId);
+      allow update, delete: if hasCompanyAccess(resource.data.companyId);
+    }
+    match /portfolio_items/{docId} {
+      allow read: if true;
+      allow create, update, delete: if isAuthenticated();
+    }
+    match /services/{docId} {
+      allow read: if hasCompanyAccess(resource.data.companyId) || true;
+      allow create: if hasCompanyAccess(request.resource.data.companyId);
+      allow update, delete: if hasCompanyAccess(resource.data.companyId);
+    }
+    match /testimonials/{docId} {
+      allow read: if hasCompanyAccess(resource.data.companyId) || true;
+      allow create: if hasCompanyAccess(request.resource.data.companyId);
+      allow update, delete: if hasCompanyAccess(resource.data.companyId);
+    }
+    match /faq/{docId} {
+      allow read: if hasCompanyAccess(resource.data.companyId) || true;
+      allow create: if hasCompanyAccess(request.resource.data.companyId);
+      allow update, delete: if hasCompanyAccess(resource.data.companyId);
+    }
+    match /blog/{docId} {
+      allow read: if hasCompanyAccess(resource.data.companyId) || true;
+      allow create: if hasCompanyAccess(request.resource.data.companyId);
+      allow update, delete: if hasCompanyAccess(resource.data.companyId);
+    }
+    match /pages/{docId} {
+      allow read: if hasCompanyAccess(resource.data.companyId) || true;
+      allow create: if hasCompanyAccess(request.resource.data.companyId);
+      allow update, delete: if hasCompanyAccess(resource.data.companyId);
+    }
+    match /hero/{docId} {
+      allow read: if hasCompanyAccess(resource.data.companyId) || true;
+      allow create: if hasCompanyAccess(request.resource.data.companyId);
+      allow update, delete: if hasCompanyAccess(resource.data.companyId);
+    }
+    match /settings/{docId} {
+      allow read: if hasCompanyAccess(resource.data.companyId) || true;
+      allow create: if hasCompanyAccess(request.resource.data.companyId);
+      allow update, delete: if hasCompanyAccess(resource.data.companyId);
+    }
+    match /technologies/{docId} {
+      allow read: if hasCompanyAccess(resource.data.companyId) || true;
+      allow create: if hasCompanyAccess(request.resource.data.companyId);
+      allow update, delete: if hasCompanyAccess(resource.data.companyId);
+    }
+    match /categories/{docId} {
+      allow read: if hasCompanyAccess(resource.data.companyId) || true;
+      allow create: if hasCompanyAccess(request.resource.data.companyId);
+      allow update, delete: if hasCompanyAccess(resource.data.companyId);
+    }
+
+    match /leads/{docId} {
+      allow create: if true;
+      allow read, update, delete: if hasCompanyAccess(resource.data.companyId);
+    }
+    match /quotes/{docId} {
+      allow create: if true;
+      allow read, update, delete: if hasCompanyAccess(resource.data.companyId);
+    }
+  }
+}

@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-poppins);
+  
+  --color-primary: #0077FF;
+  --color-secondary: #00BFB3;
+  --color-accent: #8A2BE2;
+  --color-dark: #0B1320;
+  --color-dark-surface: #080E18;
+  --color-light: #F8FAFC;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-dark);
+    color: var(--color-light);
+  }
+}
