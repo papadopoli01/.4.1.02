@@ -92,7 +92,7 @@ export function Contact() {
             viewport={{ once: true }}
             className="p-8 rounded-xl bg-white/5 border border-white/5 shadow-2xl"
           >
-            <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+           <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label htmlFor="name" className="text-xs font-bold text-gray-400 uppercase tracking-wider">Nome Completo</label>
