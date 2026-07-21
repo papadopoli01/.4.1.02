@@ -32,7 +32,12 @@ export default function LoginPage() {
       await signInWithEmailAndPassword(auth, data.email, data.password);
       router.push('/admin');
     } catch (err: any) {
-      setError(`Error: ${err.code} - ${err.message}`);
+      // Aqui nós filtramos o erro feio do Firebase e colocamos a mensagem personalizada
+      if (err.code === 'auth/invalid-credential') {
+        setError('E-mail ou senha incorretos. Verifique seus dados e tente novamente.');
+      } else {
+        setError('Ocorreu um erro ao tentar entrar. Tente novamente mais tarde.');
+      }
     }
   };
 
