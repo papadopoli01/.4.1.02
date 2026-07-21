@@ -4,12 +4,12 @@ import { getAuth, Auth } from 'firebase/auth';
 import { getStorage, FirebaseStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCbXvdIeNea7ib2pxDydFS9XQad8hEIrEY",
-  authDomain: "nexora-firebase-7fe1b.firebaseapp.com",
-  projectId: "nexora-firebase-7fe1b",
-  storageBucket: "nexora-firebase-7fe1b.firebasestorage.app",
-  messagingSenderId: "327054581269",
-  appId: "1:327054581269:web:caf3feb4882a4e7bce781c",
+  apiKey: "AIzaSyD5RfIf2MVkJiQc8z2kaA_kSjj64Wb07jQ",
+  authDomain: "agencia-ia-db.firebaseapp.com",
+  projectId: "agencia-ia-db",
+  storageBucket: "agencia-ia-db.firebasestorage.app",
+  messagingSenderId: "219764639000",
+  appId: "1:219764639000:web:3ce8c31f9e6c90b3a74a6d",
 };
 
 // Initialize Firebase only if we have a real or dummy config
