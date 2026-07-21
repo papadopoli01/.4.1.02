@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { motion } from 'motion/react';
 import { Briefcase, Users, MessageSquare, ImageIcon, TrendingUp, Activity } from 'lucide-react';
@@ -23,25 +23,19 @@ export default function DashboardHome() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Só busca os dados se o usuário estiver logado
     if (!userData) return;
 
     async function fetchDashboard() {
       try {
-        const isSuperAdmin = userData?.role === 'SuperAdmin';
-        const constraints = [];
-        
-        if (!isSuperAdmin) {
-          constraints.push(where('companyId', '==', userData!.companyId));
-        }
-
-        const baseQueryPortfolio = query(collection(db, 'portfolio_items'), ...constraints);
-        const baseQueryServices = query(collection(db, 'services'), ...constraints);
-        const baseQueryTestimonials = query(collection(db, 'testimonials'), ...constraints);
-        const baseQueryLeads = query(collection(db, 'leads'), ...constraints);
+        // Removido o filtro de 'companyId' para buscar todas as mensagens do site
+        const baseQueryPortfolio = collection(db, 'portfolio_items');
+        const baseQueryServices = collection(db, 'services');
+        const baseQueryTestimonials = collection(db, 'testimonials');
+        const baseQueryLeads = collection(db, 'leads');
         
         const recentLeadsQuery = query(
           collection(db, 'leads'), 
-          ...constraints,
           orderBy('createdAt', 'desc'), 
           limit(5)
         );
@@ -86,7 +80,7 @@ export default function DashboardHome() {
   return (
     <div className="max-w-7xl mx-auto space-y-8">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Bem-vindo(a) de volta, {userData?.name}</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Bem-vindo(a) de volta, {userData?.name || 'Admin'}</h2>
         <p className="text-slate-500 dark:text-slate-400 mt-1">Veja um resumo do que está acontecendo no seu site.</p>
       </div>
 
