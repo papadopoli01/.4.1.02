@@ -56,37 +56,40 @@ export function Portfolio() {
           </div>
         ) : (
           <div className="grid md:grid-cols-2 gap-8">
-            {projects.map((project, index) => (
-              <motion.div
-                key={project.id || index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group cursor-pointer"
-              >
-                <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-6 bg-white/5 border border-white/5 group-hover:border-primary transition-all">
-                  {project.imageUrl ? (
-                    <img
-                      src={project.imageUrl}
-                      alt={project.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-500">Sem imagem</div>
-                  )}
-                  <div className="absolute inset-0 bg-dark/20 group-hover:bg-transparent transition-colors duration-500" />
-                  <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 shadow-lg shadow-primary/30">
-                    <ArrowUpRight className="w-5 h-5" />
+            {projects.map((project, index) => {
+              const imageSrc = project.imageUrl || project.image;
+              return (
+                <motion.div
+                  key={project.id || index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="group cursor-pointer"
+                >
+                  <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-6 bg-white/5 border border-white/5 group-hover:border-primary transition-all">
+                    {imageSrc ? (
+                      <img
+                        src={imageSrc}
+                        alt={project.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-500">Sem imagem</div>
+                    )}
+                    <div className="absolute inset-0 bg-dark/20 group-hover:bg-transparent transition-colors duration-500" />
+                    <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 shadow-lg shadow-primary/30">
+                      <ArrowUpRight className="w-5 h-5" />
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <div className="text-xs text-secondary font-bold uppercase tracking-widest mb-2">Projeto Recente</div>
-                  <h3 className="text-2xl font-bold text-white group-hover:text-primary transition-colors">{project.title}</h3>
-                  <p className="text-sm text-gray-400 mt-1">{project.description}</p>
-                </div>
-              </motion.div>
-            ))}
+                  <div>
+                    <div className="text-xs text-secondary font-bold uppercase tracking-widest mb-2">Projeto Recente</div>
+                    <h3 className="text-2xl font-bold text-white group-hover:text-primary transition-colors">{project.title}</h3>
+                    <p className="text-sm text-gray-400 mt-1">{project.description}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </div>
