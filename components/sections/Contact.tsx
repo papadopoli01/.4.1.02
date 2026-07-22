@@ -46,7 +46,6 @@ export function Contact() {
 
   return (
     <section id="contato" className="py-24 bg-[#050810] relative overflow-hidden border-t border-white/5">
-      {/* Luz de fundo suave */}
       <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-600/10 blur-[150px] rounded-full pointer-events-none" />
 
@@ -67,33 +66,48 @@ export function Contact() {
             </p>
             
             <div className="space-y-8">
-              <div className="flex items-center gap-6 group cursor-default">
+              {/* E-MAIL OFICIAL */}
+              <a 
+                href="mailto:ianexorastudios@gmail.com" 
+                className="flex items-center gap-6 group cursor-pointer"
+              >
                 <div className="w-14 h-14 rounded-2xl bg-[#0a0f1a] border border-blue-500/20 flex items-center justify-center text-blue-400 group-hover:scale-110 group-hover:bg-blue-500/10 group-hover:border-blue-500/50 transition-all duration-300 shadow-lg">
                   <Mail className="w-6 h-6" />
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">E-mail</p>
-                  <p className="text-white font-medium text-lg">contato@nexorastudios.com</p>
+                  <p className="text-white font-medium text-lg group-hover:text-blue-400 transition-colors">
+                    ianexorastudios@gmail.com
+                  </p>
                 </div>
-              </div>
+              </a>
 
-              <div className="flex items-center gap-6 group cursor-default">
+              {/* WHATSAPP DIRETO */}
+              <a 
+                href="https://wa.me/5512991404474" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-6 group cursor-pointer"
+              >
                 <div className="w-14 h-14 rounded-2xl bg-[#0a0f1a] border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/50 transition-all duration-300 shadow-lg">
                   <Phone className="w-6 h-6" />
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">WhatsApp</p>
-                  <p className="text-white font-medium text-lg">+55 (11) 99999-9999</p>
+                  <p className="text-white font-medium text-lg group-hover:text-emerald-400 transition-colors">
+                    +55 (12) 99140-4474
+                  </p>
                 </div>
-              </div>
+              </a>
 
+              {/* LOCALIZAÇÃO ATUALIZADA */}
               <div className="flex items-center gap-6 group cursor-default">
                 <div className="w-14 h-14 rounded-2xl bg-[#0a0f1a] border border-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 group-hover:bg-purple-500/10 group-hover:border-purple-500/50 transition-all duration-300 shadow-lg">
                   <MapPin className="w-6 h-6" />
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Localização</p>
-                  <p className="text-white font-medium text-lg">São Paulo, SP - Brasil (Remoto)</p>
+                  <p className="text-white font-medium text-lg">São José dos Campos, SP - Brasil (Remoto)</p>
                 </div>
               </div>
             </div>
@@ -106,7 +120,6 @@ export function Contact() {
             viewport={{ once: true }}
             className="p-8 md:p-10 rounded-3xl bg-[#0a0f1a]/80 backdrop-blur-xl border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] relative"
           >
-            {/* Brilho decorativo no topo do card */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Github } from 'lucide-react';
+import { Github, Instagram } from 'lucide-react';
 
 export function Footer() {
   const [imageError, setImageError] = useState(false);
@@ -47,7 +47,19 @@ export function Footer() {
 
           {/* Redes Sociais */}
           <div className="flex items-center gap-4 text-gray-400">
-            <a href="#" className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:text-white hover:border-primary transition-all">
+            {/* LINK DO INSTAGRAM - Troque o href abaixo */}
+            <a 
+              href="https://www.instagram.com/ianexorastudios/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:text-white hover:border-primary transition-all"
+            >
+              <Instagram className="w-5 h-5" />
+            </a>
+            <a 
+              href="#" 
+              className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:text-white hover:border-primary transition-all"
+            >
               <Github className="w-5 h-5" />
             </a>
           </div>
