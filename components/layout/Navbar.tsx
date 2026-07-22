@@ -9,6 +9,7 @@ import Image from 'next/image';
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,16 +41,24 @@ export function Navbar() {
             href="/" 
             className="flex items-center gap-3 group px-3 py-2 -ml-3 rounded-2xl hover:bg-white/5 active:scale-95 transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
           >
-            {/* Container da Logo com a nova imagem */}
-            <div className="w-10 h-10 overflow-hidden rounded-xl flex items-center justify-center transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(0,119,255,0.3)]">
-              <Image 
-                src="/logo.png" 
-                alt="Logo Nexora Studios" 
-                width={40} 
-                height={40} 
-                className="object-contain" 
-                priority 
-              />
+            {/* Container da Logo */}
+            <div className="w-10 h-10 overflow-hidden rounded-xl flex items-center justify-center bg-white/5 border border-white/10 transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(0,119,255,0.3)]">
+              {!imageError ? (
+                <Image 
+                  src="/logo.png" 
+                  alt="Logo Nexora Studios" 
+                  width={40} 
+                  height={40} 
+                  className="object-contain" 
+                  priority 
+                  onError={() => setImageError(true)}
+                />
+              ) : (
+                /* Caso a imagem falhe, mostra um ícone brilhante temporário para não quebrar o layout */
+                <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xs">
+                  N
+                </div>
+              )}
             </div>
             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400 font-heading">
               Nexora <span className="text-primary">Studios</span>

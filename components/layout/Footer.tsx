@@ -1,10 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Github, Instagram, Linkedin } from 'lucide-react';
 
 export function Footer() {
+  const [imageError, setImageError] = useState(false);
+
   return (
     <footer className="bg-[#050810] border-t border-white/5 py-16">
       <div className="container mx-auto px-6 max-w-7xl">
@@ -12,14 +15,21 @@ export function Footer() {
           
           {/* Logo Oficial e Nome */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:scale-105">
-              <Image 
-                src="/logo.png" 
-                alt="Logo Nexora Studios" 
-                width={40} 
-                height={40} 
-                className="object-contain" 
-              />
+            <div className="w-10 h-10 overflow-hidden rounded-xl bg-white/5 border border-white/10 flex items-center justify-center transition-all duration-300 group-hover:scale-105">
+              {!imageError ? (
+                <Image 
+                  src="/logo.png" 
+                  alt="Logo Nexora Studios" 
+                  width={40} 
+                  height={40} 
+                  className="object-contain" 
+                  onError={() => setImageError(true)}
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xs">
+                  N
+                </div>
+              )}
             </div>
             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400 font-heading">
               Nexora <span className="text-primary">Studios</span>
