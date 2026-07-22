@@ -18,8 +18,7 @@ import {
   Menu,
   X,
   Globe,
-  Building2,
-  ChevronDown
+  Building2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -63,7 +62,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   }
 
   const isSuperAdmin = userData.role === 'SuperAdmin';
-  
   const filteredMenu = menuItems.filter(item => !item.superAdminOnly || isSuperAdmin);
 
   const handleLogout = async () => {
@@ -86,11 +84,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         )}
       </AnimatePresence>
 
-      {/* Sidebar */}
-      <motion.aside 
-        initial={false}
-        animate={{ x: sidebarOpen ? 0 : -300 }}
-        className="fixed lg:static inset-y-0 left-0 w-64 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 z-50 flex flex-col transform lg:transform-none lg:translate-x-0 transition-transform duration-300"
+      {/* Sidebar Corrigida para PC e Mobile */}
+      <aside 
+        className={`fixed lg:static inset-y-0 left-0 w-64 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 z-50 flex flex-col transition-transform duration-300 ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        }`}
       >
         <div className="h-16 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800">
           <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">Nexora CMS</span>
@@ -106,6 +104,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setSidebarOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
                   active 
                     ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium' 
@@ -137,7 +136,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             <span>Sair</span>
           </button>
         </div>
-      </motion.aside>
+      </aside>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
