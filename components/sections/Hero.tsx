@@ -7,8 +7,31 @@ import Image from 'next/image';
 export function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-32 pb-20 overflow-hidden">
-      {/* Background Glow */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] -translate-y-1/4 translate-x-1/4 bg-[radial-gradient(circle,rgba(0,119,255,0.15)_0%,rgba(138,43,226,0.05)_50%,transparent_100%)] pointer-events-none z-0" />
+      
+      {/* Fundo Fluido e Animado */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        {/* Luz Roxa */}
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            x: [0, 50, 0],
+            y: [0, 30, 0],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-[10%] -left-[10%] w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full bg-purple-600/30 blur-[120px]"
+        />
+        
+        {/* Luz Azul */}
+        <motion.div
+          animate={{
+            scale: [1, 1.5, 1],
+            x: [0, -50, 0],
+            y: [0, 50, 0],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute top-[20%] -right-[10%] w-[600px] h-[600px] md:w-[800px] md:h-[800px] rounded-full bg-blue-600/20 blur-[120px]"
+        />
+      </div>
       
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
