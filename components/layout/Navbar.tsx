@@ -35,8 +35,13 @@ export function Navbar() {
     >
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 overflow-hidden rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+          
+          {/* Logo com efeito hover arredondado e brilho corrigidos */}
+          <Link 
+            href="/" 
+            className="flex items-center gap-3 group px-3 py-2 -ml-3 rounded-2xl hover:bg-white/5 active:scale-95 transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+          >
+            <div className="w-10 h-10 overflow-hidden rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-primary/50 group-hover:shadow-[0_0_15px_rgba(0,119,255,0.3)] transition-all duration-300">
               <Logo3D />
             </div>
             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400 font-heading">
