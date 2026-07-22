@@ -35,15 +35,16 @@ export function Navbar() {
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <Image 
-              src="/logo.png" 
-              alt="Nexora Studios" 
-              width={160} 
-              height={40} 
-              className="h-10 w-auto object-contain group-hover:scale-105 transition-transform"
-            />
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-r from-primary to-accent flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-primary/30 group-hover:scale-105 transition-transform">
+                N
+              </div>
+              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400 font-heading">
+                Nexora <span className="text-primary">Studios</span>
+              </span>
+            </div>
           </Link>
-
+          
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
