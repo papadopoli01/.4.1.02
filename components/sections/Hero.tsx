@@ -2,7 +2,6 @@
 
 import { motion } from 'motion/react';
 import { ArrowRight, Sparkles } from 'lucide-react';
-import Image from 'next/image';
 
 export function Hero() {
   return (
@@ -78,16 +77,12 @@ export function Hero() {
                 <div className="w-2 h-2 rounded-full bg-green-500/50" />
               </div>
               
-              {/* Mockup Content */}
-              <div className="absolute inset-0 pt-6">
-                <Image
-                  src="https://picsum.photos/seed/hero/1920/1080"
+              {/* Mockup Content - Sugestão 1: Dashboard */}
+              <div className="absolute inset-0 pt-6 bg-slate-900">
+                <img
+                  src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1920&q=80"
                   alt="Dashboard interface preview"
-                  fill
-                  referrerPolicy="no-referrer"
-                  className="object-cover opacity-80 mix-blend-luminosity"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  priority
+                  className="w-full h-full object-cover opacity-80 mix-blend-luminosity transition-transform duration-700 hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
               </div>
