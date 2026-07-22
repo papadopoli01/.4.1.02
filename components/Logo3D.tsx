@@ -8,7 +8,6 @@ export function Logo3D() {
     const container = document.getElementById('logo-3d-container');
     if (!container) return;
 
-    // Limpa o container caso já exista algum canvas anterior
     container.innerHTML = '';
 
     const scene = new THREE.Scene();
@@ -24,11 +23,13 @@ export function Logo3D() {
     container.appendChild(renderer.domElement);
 
     const geometry = new THREE.OctahedronGeometry(1, 0);
+    
+    // Material ajustado para a cor azul/roxa vibrante do tema do site
     const material = new THREE.MeshPhysicalMaterial({
-      color: 0x5a189a,
-      emissive: 0x10002b,
-      roughness: 0.2,
-      metalness: 0.8,
+      color: 0x0077ff,       // Azul principal do site
+      emissive: 0x002244,    // Brilho interno harmonioso
+      roughness: 0.1,        // Mais reflexivo e brilhante
+      metalness: 0.9,        // Aspecto metálico moderno
       clearcoat: 1.0,
       clearcoatRoughness: 0.1,
     });
@@ -36,14 +37,14 @@ export function Logo3D() {
     const logo = new THREE.Mesh(geometry, material);
     scene.add(logo);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
 
-    const blueLight = new THREE.PointLight(0x00d2ff, 1.5);
+    const blueLight = new THREE.PointLight(0x00d2ff, 2);
     blueLight.position.set(5, 5, 2);
     scene.add(blueLight);
 
-    const purpleLight = new THREE.PointLight(0x7b2cbf, 1.5);
+    const purpleLight = new THREE.PointLight(0x7b2cbf, 2);
     purpleLight.position.set(-5, -5, 2);
     scene.add(purpleLight);
 
@@ -69,7 +70,7 @@ export function Logo3D() {
   return (
     <div 
       id="logo-3d-container" 
-      className="w-10 h-10 cursor-pointer"
+      className="w-10 h-10 cursor-pointer flex items-center justify-center"
       title="Nexora Studios"
     />
   );
