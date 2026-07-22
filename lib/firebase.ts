@@ -4,12 +4,12 @@ import { getAuth, Auth } from 'firebase/auth';
 import { getStorage, FirebaseStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD5RfIf2MVkJiQc8z2kaA_kSjj64Wb07jQ",
-  authDomain: "agencia-ia-db.firebaseapp.com",
-  projectId: "agencia-ia-db",
-  storageBucket: "agencia-ia-db.firebasestorage.app",
-  messagingSenderId: "219764639000",
-  appId: "1:219764639000:web:3ce8c31f9e6c90b3a74a6d",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase only if we have a real or dummy config
