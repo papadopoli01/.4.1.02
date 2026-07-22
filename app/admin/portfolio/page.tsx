@@ -1,245 +1,206 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { collection, getDocs, doc, setDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
+import { collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, query, orderBy } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { Plus, Edit2, Trash2, Image as ImageIcon, Loader2, ExternalLink } from 'lucide-react';
+import { motion } from 'motion/react';
+import { Briefcase, Plus, Trash2, Loader2, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import { Modal } from '@/components/ui/Modal';
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
-import Image from 'next/image';
 
-interface PortfolioItem {
-  id: string;
-  title: string;
-  category: string;
-  imageUrl: string;
-  accessLink: string;
-  createdAt: number;
-}
-
-export default function PortfolioAdmin() {
-  const [items, setItems] = useState<PortfolioItem[]>([]);
+export default function PortfolioPage() {
+  const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  // Modal state
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
-  
-  // Form State
-  const [formData, setFormData] = useState<Partial<PortfolioItem>>({
-    title: '', category: '', imageUrl: '', accessLink: ''
-  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Delete State
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  // Estados do formulário
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
 
-  const fetchItems = async () => {
-    setLoading(true);
+  useEffect(() => {
+    fetchPortfolio();
+  }, []);
+
+  async function fetchPortfolio() {
     try {
       const q = query(collection(db, 'portfolio_items'), orderBy('createdAt', 'desc'));
-      const snap = await getDocs(q);
-      const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as PortfolioItem));
-      setItems(data);
+      const querySnapshot = await getDocs(q);
+      const fetchedItems = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setItems(fetchedItems);
     } catch (error) {
-      console.warn("Unable to fetch portfolio projects", error);
-      toast.error('Erro ao buscar projetos do portfólio');
+      console.error("Erro ao buscar portfólio:", error);
+      toast.error("Erro ao carregar os projetos.");
     } finally {
       setLoading(false);
     }
-  };
+  }
 
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
-  const openModal = (item?: PortfolioItem) => {
-    if (item) {
-      setEditingItem(item);
-      setFormData(item);
-    } else {
-      setEditingItem(null);
-      setFormData({
-        title: '', category: '', imageUrl: '', accessLink: ''
-      });
-    }
-    setIsModalOpen(true);
-  };
-
-  const handleSave = async (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setIsSaving(true);
-    try {
-      const dataToSave = {
-        title: formData.title,
-        category: formData.category,
-        imageUrl: formData.imageUrl,
-        accessLink: formData.accessLink,
-        createdAt: editingItem ? editingItem.createdAt : Date.now(),
-      };
-
-      if (editingItem) {
-        await setDoc(doc(db, 'portfolio_items', editingItem.id), dataToSave, { merge: true });
-        toast.success('Projeto atualizado com sucesso!');
-      } else {
-        const newRef = doc(collection(db, 'portfolio_items'));
-        await setDoc(newRef, { id: newRef.id, ...dataToSave });
-        toast.success('Projeto criado com sucesso!');
-      }
-      setIsModalOpen(false);
-      fetchItems();
-    } catch (error) {
-      console.warn("Error saving project", error);
-      toast.error('Erro ao salvar projeto');
-    } finally {
-      setIsSaving(false);
+    if (!title || !description || !imageUrl) {
+      toast.error("Preencha todos os campos do projeto.");
+      return;
     }
-  };
 
-  const handleDelete = async () => {
-    if (!deleteId) return;
-    setIsDeleting(true);
+    setIsSubmitting(true);
     try {
-      await deleteDoc(doc(db, 'portfolio_items', deleteId));
-      toast.success('Projeto excluído com sucesso!');
-      setDeleteId(null);
-      fetchItems();
+      await addDoc(collection(db, 'portfolio_items'), {
+        title,
+        description,
+        imageUrl,
+        createdAt: serverTimestamp()
+      });
+      toast.success("Projeto adicionado com sucesso!");
+      setTitle('');
+      setDescription('');
+      setImageUrl('');
+      fetchPortfolio(); // Recarrega a lista para mostrar o novo projeto
     } catch (error) {
-      console.warn("Error deleting project", error);
-      toast.error('Erro ao excluir projeto');
+      console.error("Erro ao adicionar:", error);
+      toast.error("Ocorreu um erro ao adicionar o projeto.");
     } finally {
-      setIsDeleting(false);
+      setIsSubmitting(false);
     }
-  };
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm("Tem a certeza que deseja excluir este projeto? Esta ação não pode ser desfeita.")) return;
+    
+    try {
+      await deleteDoc(doc(db, 'portfolio_items', id));
+      toast.success("Projeto excluído com sucesso!");
+      fetchPortfolio();
+    } catch (error) {
+      console.error("Erro ao excluir:", error);
+      toast.error("Erro ao excluir o projeto.");
+    }
+  }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Portfólio</h2>
-          <p className="text-slate-500 dark:text-slate-400 mt-1">Gerencie os projetos exibidos no site.</p>
-        </div>
-        <button 
-          onClick={() => openModal()}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
-        >
-          <Plus size={18} /> Adicionar Projeto
-        </button>
+    <div className="max-w-7xl mx-auto space-y-8">
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+          <Briefcase className="w-6 h-6 text-blue-500" />
+          Gerenciar Portfólio
+        </h2>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">
+          Adicione, visualize ou remova os projetos que aparecem no seu site.
+        </p>
       </div>
 
-      <div className="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        {loading ? (
-          <div className="flex justify-center py-16"><Loader2 className="w-8 h-8 animate-spin text-blue-500" /></div>
-        ) : items.length === 0 ? (
-          <div className="text-center py-16 text-slate-500 dark:text-slate-400">Nenhum projeto cadastrado no momento.</div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-            {items.map(item => (
-              <div key={item.id} className="group bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden hover:shadow-lg transition-all duration-300">
-                <div className="aspect-video relative bg-slate-200 dark:bg-slate-800 overflow-hidden">
-                  {item.imageUrl ? (
-                    <Image src={item.imageUrl} alt={item.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <ImageIcon className="text-slate-400 w-8 h-8" />
-                    </div>
-                  )}
-                  <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => openModal(item)} className="p-2 bg-white/90 dark:bg-black/90 backdrop-blur text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg shadow-sm">
-                      <Edit2 size={16} />
-                    </button>
-                    <button onClick={() => setDeleteId(item.id)} className="p-2 bg-white/90 dark:bg-black/90 backdrop-blur text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors rounded-lg shadow-sm">
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1">{item.category}</p>
-                      <h4 className="font-semibold text-slate-900 dark:text-white truncate text-lg">{item.title}</h4>
-                    </div>
-                  </div>
-                  {item.accessLink && (
-                    <a href={item.accessLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors mt-3">
-                      <ExternalLink size={14} />
-                      Acessar Projeto
-                    </a>
-                  )}
-                </div>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        
+        {/* Lado Esquerdo: Formulário de Adição */}
+        <div className="xl:col-span-1">
+          <div className="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <h3 className="text-lg font-bold mb-6">Novo Projeto</h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Título do Projeto</label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                  placeholder="Ex: E-commerce de Roupas"
+                />
               </div>
-            ))}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Descrição Curta</label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={3}
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all resize-none"
+                  placeholder="Breve resumo sobre o que foi feito..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Link da Imagem</label>
+                <input
+                  type="url"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                  placeholder="https://..."
+                />
+                <p className="text-xs text-slate-500 mt-1.5">Cole a URL direta de uma imagem hospedada na web.</p>
+              </div>
+              
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-colors disabled:opacity-70 mt-4"
+              >
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+                Cadastrar Projeto
+              </button>
+            </form>
           </div>
-        )}
+        </div>
+
+        {/* Lado Direito: Lista de Projetos */}
+        <div className="xl:col-span-2">
+          <div className="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm min-h-[500px]">
+            <h3 className="text-lg font-bold mb-6">Projetos Publicados</h3>
+            
+            {loading ? (
+              <div className="flex justify-center items-center py-20">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+              </div>
+            ) : items.length === 0 ? (
+              <div className="text-center py-20 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl">
+                <ImageIcon className="w-12 h-12 mx-auto text-slate-400 mb-3 opacity-50" />
+                <p className="text-slate-500 dark:text-slate-400 font-medium">Nenhum projeto no portfólio.</p>
+                <p className="text-sm text-slate-400 mt-1">Use o formulário ao lado para adicionar o primeiro.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {items.map((item) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="group relative rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-slate-50 dark:bg-slate-900/50 hover:border-blue-500/50 transition-colors"
+                  >
+                    {/* Imagem do Projeto */}
+                    <div className="aspect-[4/3] w-full overflow-hidden bg-slate-200 dark:bg-slate-800 relative">
+                      {item.imageUrl ? (
+                        <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <ImageIcon className="w-8 h-8 text-slate-400" />
+                        </div>
+                      )}
+                      
+                      {/* Botão de excluir que aparece ao passar o rato */}
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                        <button
+                          onClick={() => handleDelete(item.id)}
+                          className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium shadow-lg"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Excluir
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {/* Informações */}
+                    <div className="p-4">
+                      <h4 className="font-bold text-slate-900 dark:text-white truncate">{item.title}</h4>
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">{item.description}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
       </div>
-
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? 'Editar Projeto' : 'Novo Projeto'}>
-        <form onSubmit={handleSave} className="space-y-5">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Título do Projeto</label>
-            <input 
-              required 
-              value={formData.title} 
-              onChange={e => setFormData({...formData, title: e.target.value})} 
-              className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" 
-              placeholder="Ex: E-commerce Nexora"
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Categoria</label>
-            <input 
-              required 
-              value={formData.category} 
-              onChange={e => setFormData({...formData, category: e.target.value})} 
-              className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
-              placeholder="Ex: Desenvolvimento Web"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">URL da Imagem</label>
-            <input 
-              required 
-              type="url"
-              value={formData.imageUrl} 
-              onChange={e => setFormData({...formData, imageUrl: e.target.value})} 
-              className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
-              placeholder="https://exemplo.com/imagem.png"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Link de Acesso</label>
-            <input 
-              type="url"
-              value={formData.accessLink} 
-              onChange={e => setFormData({...formData, accessLink: e.target.value})} 
-              className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
-              placeholder="https://meuprojeto.com (Opcional)"
-            />
-          </div>
-
-          <div className="flex justify-end pt-5 border-t border-slate-200 dark:border-slate-800 gap-3">
-            <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-slate-700 dark:text-slate-300">Cancelar</button>
-            <button type="submit" disabled={isSaving} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors">
-              {isSaving ? <Loader2 size={18} className="animate-spin" /> : 'Salvar'}
-            </button>
-          </div>
-        </form>
-      </Modal>
-
-      <ConfirmDialog 
-        isOpen={!!deleteId} 
-        onClose={() => setDeleteId(null)} 
-        onConfirm={handleDelete} 
-        title="Excluir Projeto" 
-        description="Tem certeza que deseja excluir este projeto? Esta ação não pode ser desfeita."
-        isLoading={isDeleting}
-      />
     </div>
   );
 }
-
