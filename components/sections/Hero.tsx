@@ -69,22 +69,22 @@ export function Hero() {
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
             className="relative"
           >
-            <div className="relative rounded-[20px] overflow-hidden border-[12px] border-b-[24px] border-slate-800 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] aspect-[16/10] bg-slate-800">
+            <div className="relative rounded-[20px] overflow-hidden border-[12px] border-b-[24px] border-slate-800 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] aspect-[16/10] bg-slate-800 flex flex-col">
               {/* Fake Browser Chrome */}
-              <div className="absolute top-0 left-0 w-full h-6 bg-slate-700/50 flex items-center px-3 gap-1 z-20">
+              <div className="w-full h-6 bg-slate-700/50 flex items-center px-3 gap-1 z-20 shrink-0 relative">
                 <div className="w-2 h-2 rounded-full bg-red-500/50" />
                 <div className="w-2 h-2 rounded-full bg-yellow-500/50" />
                 <div className="w-2 h-2 rounded-full bg-green-500/50" />
               </div>
               
-              {/* Mockup Content - Sugestão 1: Dashboard */}
-              <div className="absolute inset-0 pt-6 bg-slate-900">
+              {/* Mockup Content - Sugestão 2: Códigos preenchendo a tela toda */}
+              <div className="relative flex-1 bg-[#0d1117] overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1920&q=80"
-                  alt="Dashboard interface preview"
-                  className="w-full h-full object-cover opacity-80 mix-blend-luminosity transition-transform duration-700 hover:scale-105"
+                  src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1920&q=80"
+                  alt="Code interface preview"
+                  className="absolute inset-0 w-full h-full object-cover object-left-top opacity-70 mix-blend-luminosity transition-transform duration-700 hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0d1117] via-transparent to-transparent" />
               </div>
             </div>
 
