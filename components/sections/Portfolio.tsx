@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import Image from 'next/image';
 import { ArrowUpRight, Loader2, Briefcase } from 'lucide-react';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -68,13 +67,10 @@ export function Portfolio() {
               >
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-6 bg-white/5 border border-white/5 group-hover:border-primary transition-all">
                   {project.imageUrl ? (
-                    <Image
+                    <img
                       src={project.imageUrl}
                       alt={project.title}
-                      fill
-                      referrerPolicy="no-referrer"
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-gray-500">Sem imagem</div>

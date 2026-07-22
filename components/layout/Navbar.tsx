@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Code2 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Logo3D } from '@/components/Logo3D';
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -34,15 +35,13 @@ export function Navbar() {
     >
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-r from-primary to-accent flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-primary/30 group-hover:scale-105 transition-transform">
-                N
-              </div>
-              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400 font-heading">
-                Nexora <span className="text-primary">Studios</span>
-              </span>
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 overflow-hidden rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+              <Logo3D />
             </div>
+            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400 font-heading">
+              Nexora <span className="text-primary">Studios</span>
+            </span>
           </Link>
           
           {/* Desktop Nav */}
