@@ -35,7 +35,7 @@ export default function LeadsAdmin() {
   const fetchLeads = async () => {
     setLoading(true);
     try {
-      // Removido o filtro restritivo de companyId para buscar todos os leads do site
+      // Consulta limpa sem filtros restritos para buscar todos os leads com sucesso
       const q = query(collection(db, 'leads'), orderBy('createdAt', 'desc'));
       const snap = await getDocs(q);
       const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Lead));
@@ -187,4 +187,49 @@ export default function LeadsAdmin() {
                       </select>
                       <button 
                         onClick={() => setDeleteId(lead.id)}
-                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded
+                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                      <Mail size={16} /> <a href={`mailto:${lead.email}`} className="hover:text-blue-500">{lead.email}</a>
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                      <Phone size={16} /> <a href={`https://wa.me/${lead.phone.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="hover:text-emerald-500">{lead.phone}</a>
+                    </div>
+                    {lead.company && (
+                      <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                        <Building size={16} /> <span>{lead.company}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                      <Calendar size={16} /> <span>{lead.createdAt?.toDate ? format(lead.createdAt.toDate(), "dd 'de' MMMM, yyyy 'às' HH:mm", { locale: ptBR }) : 'Data desconhecida'}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="lg:w-1/3 bg-slate-50 dark:bg-slate-900 rounded-xl p-4 border border-slate-100 dark:border-slate-800 text-sm">
+                  <span className="font-semibold block mb-2 text-slate-900 dark:text-white">Mensagem:</span>
+                  <p className="text-slate-600 dark:text-slate-400 whitespace-pre-wrap">{lead.message}</p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      <ConfirmDialog 
+        isOpen={!!deleteId} 
+        onClose={() => setDeleteId(null)} 
+        onConfirm={handleDelete} 
+        title="Excluir Lead" 
+        description="Tem certeza que deseja excluir este contato? Você perderá todo o histórico e mensagem desta pessoa."
+        isLoading={isDeleting}
+      />
+    </div>
+  );
+}
