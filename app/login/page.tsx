@@ -30,9 +30,13 @@ export default function LoginPage() {
     try {
       setError(null);
       await signInWithEmailAndPassword(auth, data.email, data.password);
-      router.push('/admin');
+      
+      // Correção do Login Duplo: Aguarda 1.5s para o Firebase sincronizar antes de mudar de página
+      setTimeout(() => {
+        router.push('/admin');
+      }, 1500);
+      
     } catch (err: any) {
-      // Aqui nós filtramos o erro feio do Firebase e colocamos a mensagem personalizada
       if (err.code === 'auth/invalid-credential') {
         setError('E-mail ou senha incorretos. Verifique seus dados e tente novamente.');
       } else {
