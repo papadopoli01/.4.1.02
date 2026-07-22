@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Code2 } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Logo3D } from '@/components/Logo3D';
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -36,13 +35,21 @@ export function Navbar() {
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="flex items-center justify-between">
           
-          {/* Logo com efeito hover arredondado e brilho corrigidos */}
+          {/* Link da Logo */}
           <Link 
             href="/" 
             className="flex items-center gap-3 group px-3 py-2 -ml-3 rounded-2xl hover:bg-white/5 active:scale-95 transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
           >
-            <div className="w-10 h-10 overflow-hidden rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-primary/50 group-hover:shadow-[0_0_15px_rgba(0,119,255,0.3)] transition-all duration-300">
-              <Logo3D />
+            {/* Container da Logo com a nova imagem */}
+            <div className="w-10 h-10 overflow-hidden rounded-xl flex items-center justify-center transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(0,119,255,0.3)]">
+              <Image 
+                src="/logo.png" 
+                alt="Logo Nexora Studios" 
+                width={40} 
+                height={40} 
+                className="object-contain" 
+                priority 
+              />
             </div>
             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400 font-heading">
               Nexora <span className="text-primary">Studios</span>

@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Logo3D } from '@/components/Logo3D';
-import { Github, Instagram, Linkedin, Twitter } from 'lucide-react';
+import Image from 'next/image';
+import { Github, Instagram, Linkedin } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -10,10 +10,16 @@ export function Footer() {
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
           
-          {/* Logo 3D e Nome */}
+          {/* Logo Oficial e Nome */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 overflow-hidden rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
-              <Logo3D />
+            <div className="w-10 h-10 overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:scale-105">
+              <Image 
+                src="/logo.png" 
+                alt="Logo Nexora Studios" 
+                width={40} 
+                height={40} 
+                className="object-contain" 
+              />
             </div>
             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400 font-heading">
               Nexora <span className="text-primary">Studios</span>
