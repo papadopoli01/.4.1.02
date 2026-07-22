@@ -6,7 +6,6 @@ import { Services } from '@/components/sections/Services';
 import { Differentials } from '@/components/sections/Differentials';
 import { HowItWorks } from '@/components/sections/HowItWorks';
 import { Portfolio } from '@/components/sections/Portfolio';
-import { Testimonials } from '@/components/sections/Testimonials';
 import { Plans } from '@/components/sections/Plans';
 import { FAQ } from '@/components/sections/FAQ';
 import { CTA } from '@/components/sections/CTA';
@@ -23,7 +22,6 @@ export default function Home() {
       <Differentials />
       <HowItWorks />
       <Portfolio />
-      <Testimonials />
       <Plans />
       <FAQ />
       <CTA />
