@@ -6,7 +6,7 @@ import { CheckCircle2, Sparkles } from 'lucide-react';
 const plans = [
   {
     name: 'Essencial',
-    price: 'R$ 499,90',
+    price: 'A partir de R$ 499,90',
     description: 'Ideal para profissionais autônomos e pequenas empresas que precisam de presença online.',
     features: [
       'Site institucional (One Page)',
