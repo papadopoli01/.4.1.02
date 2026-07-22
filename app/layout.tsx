@@ -2,7 +2,6 @@ import type {Metadata} from 'next';
 import { Inter, Poppins } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
-import { CustomCursor } from '@/components/CustomCursor'; // <-- Importação do cursor adicionada
 
 const inter = Inter({
   subsets: ['latin'],
@@ -24,7 +23,6 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="pt-BR" className="scroll-smooth">
       <body className={`${inter.variable} ${poppins.variable} font-sans antialiased bg-dark text-light`} suppressHydrationWarning>
-        <CustomCursor /> {/* <-- Cursor ativado em todo o site! */}
         <Providers>
           {children}
         </Providers>
