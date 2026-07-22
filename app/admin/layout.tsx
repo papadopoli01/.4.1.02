@@ -6,7 +6,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { auth } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
-import { ProtectedRoute } from '../../components/admin/auth/ProtectedRoute'; // <-- Cão de Guarda Adicionado
+
+// ATENÇÃO: Se esta linha de baixo ficar sublinhada a vermelho, retire o "/auth" dela!
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'; 
+
 import { 
   LayoutDashboard, 
   Briefcase, 
@@ -39,7 +42,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // A tela de carregamento continua para garantir que os dados do usuário (nome, cargo) carreguem antes de desenhar a tela
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#050810] text-white">
@@ -66,7 +68,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-[#050810] flex text-white">
-        {/* Mobile Sidebar Overlay */}
         <AnimatePresence>
           {sidebarOpen && (
             <motion.div 
@@ -79,7 +80,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           )}
         </AnimatePresence>
 
-        {/* Sidebar Escura */}
         <aside 
           className={`fixed lg:static inset-y-0 left-0 w-64 bg-[#080E18] border-r border-slate-800 z-50 flex flex-col transition-transform duration-300 ${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
@@ -133,6 +133,31 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </div>
         </aside>
 
-        {/* Main Content Escuro */}
         <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#050810]">
-          <header className="h-16 flex items-center justify-between px-6 bg-[#080E1
+          <header className="h-16 flex items-center justify-between px-6 bg-[#080E18] border-b border-slate-800 shrink-0">
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => setSidebarOpen(true)}
+                className="lg:hidden text-slate-400 hover:text-white"
+              >
+                <Menu size={20} />
+              </button>
+              <h1 className="text-lg font-semibold text-white capitalize">
+                {pathname === '/admin' ? 'Dashboard' : pathname.split('/').pop()}
+              </h1>
+            </div>
+            <div className="flex items-center gap-4">
+               <span className="text-xs px-3 py-1 rounded-full bg-blue-950 border border-blue-800 text-blue-300 font-medium">
+                 Company ID: {userData.companyId || 'default'}
+               </span>
+            </div>
+          </header>
+          
+          <div className="flex-1 overflow-auto p-6 bg-[#050810]">
+            {children}
+          </div>
+        </main>
+      </div>
+    </ProtectedRoute>
+  );
+}
