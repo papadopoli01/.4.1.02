@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { collection, getDocs, where, query, orderBy, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { Search, Filter, Download, Loader2, Trash2, Mail, Phone, Building, Calendar, CheckCircle2 } from 'lucide-react';
+import { Search, Filter, Download, Loader2, Trash2, Mail, Phone, Building, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -35,12 +35,13 @@ export default function LeadsAdmin() {
   const fetchLeads = async () => {
     setLoading(true);
     try {
-      if (!userData) return;
-      const q = query(collection(db, 'leads'), where('companyId', '==', userData.companyId), orderBy('createdAt', 'desc'));
+      // Removido o filtro restritivo de companyId para buscar todos os leads do site
+      const q = query(collection(db, 'leads'), orderBy('createdAt', 'desc'));
       const snap = await getDocs(q);
       const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Lead));
       setLeads(data);
     } catch (error) {
+      console.error(error);
       toast.error('Erro ao buscar leads');
     } finally {
       setLoading(false);
@@ -49,7 +50,7 @@ export default function LeadsAdmin() {
 
   useEffect(() => {
     fetchLeads();
-  }, [userData]);
+  }, []);
 
   const handleStatusChange = async (leadId: string, newStatus: string) => {
     try {
@@ -86,11 +87,11 @@ export default function LeadsAdmin() {
       `"${lead.phone}"`,
       `"${lead.company || ''}"`,
       `"${lead.message.replace(/"/g, '""')}"`,
-      `"${lead.status}"`,
+      `"${lead.status || 'Novo'}"`,
       `"${lead.createdAt ? format(lead.createdAt.toDate(), 'dd/MM/yyyy HH:mm') : ''}"`
     ].join(','));
 
-    const csvContent = [headers.join(','), ...csvData].join('\\n');
+    const csvContent = [headers.join(','), ...csvData].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
@@ -105,8 +106,8 @@ export default function LeadsAdmin() {
 
   const filteredLeads = leads.filter(lead => {
     const matchesSearch = 
-      lead.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (lead.name && lead.name.toLowerCase().includes(searchTerm.toLowerCase())) || 
+      (lead.email && lead.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (lead.company && lead.company.toLowerCase().includes(searchTerm.toLowerCase()));
     
     const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
@@ -186,49 +187,4 @@ export default function LeadsAdmin() {
                       </select>
                       <button 
                         onClick={() => setDeleteId(lead.id)}
-                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">
-                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                      <Mail size={16} /> <a href={`mailto:${lead.email}`} className="hover:text-blue-500">{lead.email}</a>
-                    </div>
-                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                      <Phone size={16} /> <a href={`https://wa.me/${lead.phone.replace(/\\D/g, '')}`} target="_blank" rel="noreferrer" className="hover:text-emerald-500">{lead.phone}</a>
-                    </div>
-                    {lead.company && (
-                      <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                        <Building size={16} /> <span>{lead.company}</span>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                      <Calendar size={16} /> <span>{lead.createdAt ? format(lead.createdAt.toDate(), "dd 'de' MMMM, yyyy 'às' HH:mm", { locale: ptBR }) : 'Data desconhecida'}</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="lg:w-1/3 bg-slate-50 dark:bg-slate-900 rounded-xl p-4 border border-slate-100 dark:border-slate-800 text-sm">
-                  <span className="font-semibold block mb-2 text-slate-900 dark:text-white">Mensagem:</span>
-                  <p className="text-slate-600 dark:text-slate-400 whitespace-pre-wrap">{lead.message}</p>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      )}
-
-      <ConfirmDialog 
-        isOpen={!!deleteId} 
-        onClose={() => setDeleteId(null)} 
-        onConfirm={handleDelete} 
-        title="Excluir Lead" 
-        description="Tem certeza que deseja excluir este contato? Você perderá todo o histórico e mensagem desta pessoa."
-        isLoading={isDeleting}
-      />
-    </div>
-  );
-}
+                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded
