@@ -6,7 +6,7 @@ import { CheckCircle2, Sparkles } from 'lucide-react';
 const plans = [
   {
     name: 'Essencial',
-    price: 'R$ 2.500',
+    price: 'R$ 499,90',
     description: 'Ideal para profissionais autônomos e pequenas empresas que precisam de presença online.',
     features: [
       'Site institucional (One Page)',
@@ -20,7 +20,7 @@ const plans = [
   },
   {
     name: 'Profissional',
-    price: 'R$ 5.000',
+    price: 'A partir de R$ 1.399,90',
     description: 'A solução completa para empresas que buscam autoridade e máxima geração de leads.',
     features: [
       'Site multipáginas (até 5 pág.)',
@@ -94,7 +94,7 @@ export function Plans() {
               <div className="mb-8">
                 <h3 className="text-2xl font-bold mb-3 text-white">{plan.name}</h3>
                 <p className="text-sm text-gray-400 mb-6 min-h-[60px] leading-relaxed">{plan.description}</p>
-                <div className="text-4xl md:text-5xl font-heading font-black text-white tracking-tight">
+                <div className="text-2xl md:text-3xl font-heading font-black text-white tracking-tight">
                   {plan.price}
                 </div>
               </div>
