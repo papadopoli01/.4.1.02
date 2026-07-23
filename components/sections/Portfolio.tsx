@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { ArrowUpRight, Loader2, Briefcase } from 'lucide-react';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -55,7 +55,6 @@ export function Portfolio() {
           <div className="grid md:grid-cols-2 gap-8">
             {projects.map((project, index) => {
               const imageSrc = project.imageUrl || project.image;
-              // Pega o link cadastrado no painel. Se não houver, não redireciona (usa '#').
               const projectLink = project.projectUrl && project.projectUrl.length > 5 ? project.projectUrl : '#';
 
               return (
@@ -66,7 +65,6 @@ export function Portfolio() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
-                  {/* A tag <a> envolve toda a imagem e textos para que qualquer clique abra o link */}
                   <a 
                     href={projectLink} 
                     target={projectLink !== '#' ? "_blank" : "_self"} 
@@ -77,13 +75,18 @@ export function Portfolio() {
                       {imageSrc ? (
                         <img
                           src={imageSrc}
-                          alt={project.title}
+                          alt={project.title || 'Projeto'}
+                          loading="lazy"
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          onError={(e) => {
+                            // Se a imagem falhar ao carregar, exibe um placeholder visual
+                            (e.target as HTMLElement).style.display = 'none';
+                          }}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-500">Sem imagem</div>
                       )}
-                      <div className="absolute inset-0 bg-dark/20 group-hover:bg-transparent transition-colors duration-500" />
+                      <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
                       
                       <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 shadow-lg shadow-primary/30">
                         <ArrowUpRight className="w-5 h-5" />
