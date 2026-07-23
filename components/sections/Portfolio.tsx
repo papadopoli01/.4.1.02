@@ -102,3 +102,4 @@ export function Portfolio() {
       </div>
     </section>
   );
+}
